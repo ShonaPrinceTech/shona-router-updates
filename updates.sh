@@ -1,22 +1,31 @@
 #!/bin/sh
 
-# Log file for updates
+# Log file (stored in RAM, resets on reboot)
 LOGFILE="/var/log/update.log"
 
-# Check if log file exists, create if it doesn't
+# Start logging
 echo "$(date) - Checking for updates..." >> $LOGFILE
 
-# Check if updates are available
-echo "Updating router..."
-
 # Update package list
-opkg update
+echo "Updating package list..."
+opkg update >> $LOGFILE 2>&1
 
-# Pull latest config files (if any)
-curl -o /etc/config/router https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/openwrt-update/main/network
+# Download latest update script from GitHub
+echo "Downloading latest update script..."
+curl -s -o /root/router.sh https://raw.githubusercontent.com/ShonaPrinceTech/shona-router-updates/main/updates.sh >> $LOGFILE 2>&1
+
+# Ensure script was downloaded successfully
+if [ -s /root/router.sh ]; then
+    chmod +x /root/router.sh
+    echo "Successfully downloaded and updated router script." >> $LOGFILE
+else
+    echo "Failed to download update script. Check GitHub link." >> $LOGFILE
+    exit 1
+fi
 
 # Restart services if needed
-/etc/init.d/network restart
+echo "Restarting network services..." >> $LOGFILE
+/etc/init.d/network restart >> $LOGFILE 2>&1
 
 # Log completion
-echo "$(date) - Update completed." >> $LOGFILE
+echo "$(date) - Update completed successfully." >> $LOGFILE
