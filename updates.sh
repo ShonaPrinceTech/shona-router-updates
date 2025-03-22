@@ -12,7 +12,7 @@ opkg update >> $LOGFILE 2>&1
 
 # Download latest update script from GitHub
 echo "Downloading latest update script..."
-curl -s -o /root/router.sh https://raw.githubusercontent.com/ShonaPrinceTech/shona-router-updates/main/updates.sh >> $LOGFILE 2>&1
+curl -s -o /root/router.sh https://raw.githubusercontent.com/ShonaPrinceTech/shona-router-updates/main/router.sh >> $LOGFILE 2>&1
 
 # Ensure script was downloaded successfully
 if [ -s /root/router.sh ]; then
